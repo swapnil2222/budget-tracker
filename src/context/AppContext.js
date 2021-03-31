@@ -1,35 +1,42 @@
 import { createContext, useReducer } from 'react';
+import { getData, setData } from '../utils/localStore';
 const reducer = (state, action) => {
+  let obj = {};
   switch (action.type) {
     case 'ADD_EXPENSE':
-      return {
+      obj = {
         ...state,
         expenses: [...state.expenses, action.payload],
       };
+      setData(obj);
+      return obj;
     case 'REMOVE_EXPENSE':
-      return {
+      obj = {
         ...state,
         expenses: state.expenses.filter(
           (expense) => expense.id !== action.payload,
         ),
       };
+      setData(obj);
+      return obj;
     case 'UPDATE_BALANCE':
-      return {
+      obj = {
         ...state,
         budget: action.payload,
       };
+      setData(obj);
+      return obj;
     default:
       return state;
   }
 };
-const initialState = {
-  budget: 2000,
-  expenses: [
-    { id: 1, name: 'shopping', cost: 40 },
-    { id: 2, name: 'holiday', cost: 40 },
-    { id: 3, name: 'car service', cost: 40 },
-  ],
-};
+const localStoreData = getData();
+let parsedData = {};
+if (localStoreData) {
+  parsedData = JSON.parse(localStoreData);
+}
+const initialState = parsedData;
+
 export const AppContext = createContext();
 
 export const AppProvider = (props) => {
@@ -37,8 +44,7 @@ export const AppProvider = (props) => {
   return (
     <AppContext.Provider
       value={{
-        budget: state.budget,
-        expenses: state.expenses,
+        ...state,
         dispatch,
       }}
     >
