@@ -40,6 +40,9 @@ const ExpenseList = () => {
             ></ExpenseItem>
           ))}
         </ul>
+        {filterExpenses.length === 0 && (
+          <p className="text-center">No Expenses found.</p>
+        )}
       </div>
     </div>
   );
